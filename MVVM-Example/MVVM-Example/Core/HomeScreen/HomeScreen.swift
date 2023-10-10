@@ -3,6 +3,7 @@ import UIKit
 protocol HomeScreenProtocol: AnyObject{ //AnyObject ile bu protokolün sadece sınıflara uygulanabilir olduğuna emiin oluyoruz
     func configureVC()
     func configureCollectionView()
+    func reloadCollectionView()     //yeni veriler geldiğinde collection viewi güncellemek için
 }
 
 final class HomeScreen: UIViewController {
@@ -45,6 +46,10 @@ extension HomeScreen: HomeScreenProtocol{
         collectionView.pinToEdgesOf(view: view)
     
     }
+    func reloadCollectionView(){
+        collectionView.reloadOnMainThread() //UICollectionView+Ext sınıfına yazdığımız fonk çağırdık
+
+    }
 }
 //MARK: -CollectionView
 extension HomeScreen: UICollectionViewDelegate, UICollectionViewDataSource{
@@ -57,5 +62,32 @@ extension HomeScreen: UICollectionViewDelegate, UICollectionViewDataSource{
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.reuseID, for: indexPath) as! MovieCell
         cell.setCell(movie: viewModel.movies[indexPath.item])
     
+    }
+    func scrollViewDidScroll(_ scrollView: UIScrolView){
+        //Main theread ta reload etmesini istiyoruz
+        DispatchQueue.main.async{
+            self.collectionView.reloadData  //Clouserin içerisinde olduğu için self yazılıyor
+        }
+
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrolView){
+        let offsetY = scroolViewcontentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+
+        print("offsetY: \(offsetY)")                //11786.333  aşağı inildikçe tek bu artar
+        print("contentHeight: \(contentHeight)")    //13600.0    scroolViewin uzunluğu
+        print("height: \(height)")                  //926        ekran buyutu
+        print("")
+
+        //Scrollun %80 ine gelindiğini hesaplıyoruz sona yaklaştığımızda istek atabilmek için
+        if offsetY > contentHeight - (2 * height) {
+            viewModel.getMovies()
+        }
     }
 }

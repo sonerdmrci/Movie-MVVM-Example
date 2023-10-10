@@ -1,8 +1,8 @@
 import Foundation
 
-class MovieService {
-    func downloadMovie(complation: @escaping ([MovieResult]?) -> ()){
-        guard let url = URL(string: APIURLs.movies(page: 1) ) else
+final class MovieService {
+    func downloadMovie(page: Int, complation: @escaping ([MovieResult]?) -> ()){
+        guard let url = URL(string: APIURLs.movies(page: page) ) else
             {return}
         //NetvorkManager sınıfındaki complation çalışır 
         //Escaping kullandığımız için weak self kullandık
@@ -17,6 +17,11 @@ class MovieService {
             }
         }
     }
+
+    func downloadDetail(id: Int, complation: @escaping (MovieResult?) -> ()){
+        guard let url = URL(string: APIURLs.detail(id: id)) else {return}
+    }
+
     private func handleWithError(_ error: Error){ // _ koymamızın sebebi dışarıda verdiğimiz değişkeni kullanmamıza gerk kalmaması için
         print(error.localizedDescription)
     }

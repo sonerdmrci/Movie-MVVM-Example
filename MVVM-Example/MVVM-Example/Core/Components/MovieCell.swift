@@ -2,7 +2,7 @@
 
 import UIKit
 
-class MovieCell: UICollectionViewCell{ 
+final class MovieCell: UICollectionViewCell{ 
     static let reuseID = "MovieCell"
 
     private var posterImageView: PosterImageView!
@@ -17,6 +17,12 @@ class MovieCell: UICollectionViewCell{
     }
 
     //MARK: -Functins
+    //Cell ler aşağı doğru inildikçe üsttekiler alta doğru kaydığında celler tekrar kullanılır ve onları sıfırlamalıyız
+    //İnternetten dolayı alttaki fotoğraflar yüklenmezsse üstteki celler alta gelirken güncellenmiyor ve ierisindeki resimde geliyor
+    override func prepareForReuse(){
+        posterImageView.image = nil
+        posterImageView.cancelDownloading
+    }
 
     func setCell(movie: MovieResult){
         posterImageView.downloadImage(movie: movie)

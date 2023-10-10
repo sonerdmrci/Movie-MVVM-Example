@@ -1,6 +1,6 @@
 import Foundation
 //HomeSreende olacak herşeye viewModeli karar verecek
-//herşeyine erişimi kısıtlamak için protocol yazıoruz
+//herşeyine erişimi kısıtlamak için protocol yazıyoruz
 
 protocol HomeViewModelProtocol {
     var view: HomeScreenProtocol? {get set}
@@ -24,13 +24,13 @@ extension HomeViewModel: HomeViewModelProtocol {
    
     }
     func get movies(){
-        service.downloadMovie{[weak self] returnedMovies in //returnedMovies = Dönen filimler
+        service.downloadMovie(page: page){[weak self] returnedMovies in //returnedMovies = Dönen filimler
             guard let self = self else { return }
             guard let returnedMovies = returnedMovies else {return}
 
-            self.movies = returnedMovies
-            print(returnedMovies)
-
+            self.movies.append(contentsOf: returnedMovies)
+            self.page += 1               //Hesapladığımız gibi %80 civarlarına inildğiğnde tekrar istek atıcak
+            self.view?.reloadCollectionView() 
         }
     }
     

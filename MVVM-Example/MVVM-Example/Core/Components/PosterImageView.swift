@@ -2,7 +2,10 @@
 
 import UIKit
 
-class PosterImageView: UIImageView{
+final class PosterImageView: UIImageView{
+
+    private var dataTask: URLSessionDataTask? //URLSessionun referansını tutar
+
     override init(frame: CGRect){
         super.init(frame: frame)
 
@@ -13,11 +16,25 @@ class PosterImageView: UIImageView{
     }
     func downloadImage(movie: MovieResult){
         guard let url = URL(string: APIURLs.imageURL(posterPath: movie._posterPath)) else { return }
-        URLSession().shared.dataTask(with: url){ data, _, _ in
-            guard let data = data else { return }
-            
-            self.image = UIImage()//TODO burada kaldım
+
+        NetvorkManager.shared.download(url: ){ [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    self.image = UIImage(data: data)
+                }
+            case .failure(_):
+                break
+            }
         }
+        dataTask?.resume()
+    }
+    //Çok hızlı kaydırıldığında fotoğrafların indirilmesini iptal etmek istiyoruz
+    func cancelDownloading() {
+        dataTask.cancel()
+        dataTask = nil
     }
 
 }
