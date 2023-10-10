@@ -11,7 +11,7 @@ protocol HomeViewModelProtocol {
 final class HomeViewModel {
     //weak protocole verilmez bundan biz bir klasa conform ettiğimiz için emiiniz verdiğimize
     //ve bunu belirtmek için HomeScreen protokolüne AnyObject keywordunu uyguladık sınıflara uygulanabilir olduğundan emiin olduk 
-    weak var view: HomeScreenProtocol? //burayı gösteren view e zayıf olmasını buraya fazla yüklenmemesini söylüyoruz
+    weak var view: HomeScreenProtocol? //burayı gösteren view e zayıf olmasını buraya fazla yüklenmemesini söylüyoruz bunu yapmazsak sürekli initilazed olacak
     private let service = MovieService()   //servis katmanı ile bağlantı kurduk
     var movies: [MovieResult] = []
 
@@ -21,9 +21,9 @@ extension HomeViewModel: HomeViewModelProtocol {
     func viewDidLoad(){
         view?.configureVC()
         view?.configureCollectionView()  //collection viewin özelliklerini verdik ve burada çalıştırıyoruz
-   
+        getMovies()
     }
-    func get movies(){
+    func getMovies(){
         service.downloadMovie(page: page){[weak self] returnedMovies in //returnedMovies = Dönen filimler
             guard let self = self else { return }
             guard let returnedMovies = returnedMovies else {return}
@@ -39,7 +39,8 @@ extension HomeViewModel: HomeViewModelProtocol {
             guard let self = self else { return }
 
             guard let returnedDetail = returnedDetail else { return }
-    
+
+            self.view.navigateToDetailScreen(movie: returnedDetail)
 
         }
     }

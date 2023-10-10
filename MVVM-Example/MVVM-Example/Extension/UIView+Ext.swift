@@ -1,5 +1,6 @@
 import UIKit
 
+//Viewin ekranı kaplamasını sağladık
 extension UIView{
     func pinToEdgesOf(view: UIView){
         NSLayoutConstraint.activate([

@@ -4,14 +4,14 @@ protocol HomeScreenProtocol: AnyObject{ //AnyObject ile bu protokolün sadece s�
     func configureVC()                  //ViewControllere stil veriyoruz
     func configureCollectionView()
     func reloadCollectionView()     //yeni veriler geldiğinde collection viewi güncellemek için
+    func navigateToDetailScreen(movie: MovieResult)
 }
-
+//MARK: ViewController
 final class HomeScreen: UIViewController {
-    //MARK: -Propairets
+
     private let viewModel = HomeViewModel()
 
-    //MARK: -Object
-    private var collectionView: UICollectionView()
+    private var collectionView: UICollectionView!
 
     //MARK: -Life Cycle
     override func viewDidLoad(){
@@ -25,15 +25,12 @@ final class HomeScreen: UIViewController {
 //MARK: -Extension HomeScreenProtocol
 extension HomeScreen: HomeScreenProtocol{
 
-    //MARK: -Functions
     func configureVC(){
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemBackground
         title = "Populer Movies "
     }
 
     func configureCollectionView(){
-
-
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: UIHelper.createHomeFlowLayout())
         view.addSubview(collectionView) //viewin alt görünümü olarak ekledik
 
@@ -42,14 +39,19 @@ extension HomeScreen: HomeScreenProtocol{
         collectionView.dataSource = self
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.reuseID)
 
-        collectionView.topAnchor
-
         collectionView.pinToEdgesOf(view: view)
     
     }
     func reloadCollectionView(){
         collectionView.reloadOnMainThread() //UICollectionView+Ext sınıfına yazdığımız fonk çağırdık
 
+    }
+    func navigateToDetailScreen(movie: MovieResult){
+        //BackRound therendte ui ile ilgili işlemler yapılmaz main threde alınmalı UIdeki değişiklikler
+        DispatchQueue.main.async {
+            let detailScreen = DetailScreen(movie: movie)
+            self.navigationController.pushViewController(detailScreen, animated: true)
+        }
     }
 }
 //MARK: -CollectionView

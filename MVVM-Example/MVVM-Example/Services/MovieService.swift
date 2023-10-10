@@ -1,9 +1,9 @@
 import Foundation
 
 final class MovieService {
+    //Burada sayfa alıyoruz her isteği attığımızda 20 veri dönüyor
     func downloadMovie(page: Int, complation: @escaping ([MovieResult]?) -> ()){
-        guard let url = URL(string: APIURLs.movies(page: page) ) else
-            {return}
+        guard let url = URL(string: APIURLs.movies(page: page) ) else {return}
         //NetvorkManager sınıfındaki complation çalışır 
         //Escaping kullandığımız için weak self kullandık
         NetworkManager.shared.download(url: url){[weak self ] result in
@@ -20,6 +20,7 @@ final class MovieService {
 
     func downloadDetail(id: Int, complation: @escaping (MovieResult?) -> ()){
         guard let url = URL(string: APIURLs.detail(id: id)) else {return}
+
         NetvorkManager.shared.download(url: url){ [weak self] result
             guard let self = self else { return }
             switch result {
@@ -35,6 +36,8 @@ final class MovieService {
     private func handleWithError(_ error: Error){ // _ koymamızın sebebi dışarıda verdiğimiz değişkeni kullanmamıza gerk kalmaması için
         print(error.localizedDescription)
     }
+
+    //poliymorphism: Ayni isimde birden çok fonk
     private funk handleWithData(_ data: Data) -> [MovieResult]?{
         //results modelinin değerine ulaşmak için ilk Movie ye ulaşmalıyız
         //JSONDecoderkullanmalıyız bunun için error thorow edeceği için try catch içine alıyoruz

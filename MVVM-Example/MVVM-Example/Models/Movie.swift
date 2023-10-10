@@ -5,7 +5,7 @@ struct Movie{
 }
 
 struct MovieResult {
-    let id: Int?
+    let id: Int?                //Opsiyonel yapmamızın sebebi servisten boşta dönebilir
     let posterPath: String?
     let overview, releaseDate, title: String?
 
@@ -16,12 +16,21 @@ struct MovieResult {
         case releaseDate = "release_date"
     }    
 
-    //opsiyonelden kurtulmak için compitut propartiy ile
+    //opsiyonelden kurtulmak için compitut propartiy ile opsiyonellikten çıkardık
     var _id: Int {
         id ?? Int.min
     }
 
     var _posterPath: String {
         posterPath ?? ""
+    }
+    var _overview: String {
+        overview ?? ""
+    }
+    var _title: String {
+        title ?? "N/A"
+    }
+    var _releaseDate: String {
+        releaseDate ?? "N/A"
     }
 }
