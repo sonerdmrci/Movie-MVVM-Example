@@ -1,7 +1,7 @@
 import UIKit
 
 protocol HomeScreenProtocol: AnyObject{ //AnyObject ile bu protokolün sadece sınıflara uygulanabilir olduğuna emiin oluyoruz
-    func configureVC()
+    func configureVC()                  //ViewControllere stil veriyoruz
     func configureCollectionView()
     func reloadCollectionView()     //yeni veriler geldiğinde collection viewi güncellemek için
 }
@@ -28,6 +28,7 @@ extension HomeScreen: HomeScreenProtocol{
     //MARK: -Functions
     func configureVC(){
         view.backgroundColor = .systemPink
+        title = "Populer Movies "
     }
 
     func configureCollectionView(){
