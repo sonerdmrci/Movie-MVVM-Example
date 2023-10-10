@@ -20,6 +20,16 @@ final class MovieService {
 
     func downloadDetail(id: Int, complation: @escaping (MovieResult?) -> ()){
         guard let url = URL(string: APIURLs.detail(id: id)) else {return}
+        NetvorkManager.shared.download(url: url){ [weak self] result
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                complation(self.handleWithData(data))
+            case .failure(let error)
+                self.handleWithError(error)
+            }
+
+        }
     }
 
     private func handleWithError(_ error: Error){ // _ koymamızın sebebi dışarıda verdiğimiz değişkeni kullanmamıza gerk kalmaması için
@@ -35,6 +45,15 @@ final class MovieService {
         } catch  {  //let error var catch yanında ama yazılmaz
             print(error)
             return nil 
+        }
+    }
+    private func handleWithData(_ data: Data) -> MovieResult? {
+        do{
+            let movieDetail = try JSONDecoder().decode(MovieResult.self, from: data)
+            return movieDetail
+        }catch {
+            print(error)
+            return nil
         }
     }
 }

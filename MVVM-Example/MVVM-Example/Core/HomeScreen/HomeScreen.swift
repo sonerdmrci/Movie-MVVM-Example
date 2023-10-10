@@ -72,7 +72,7 @@ extension HomeScreen: UICollectionViewDelegate, UICollectionViewDataSource{
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        viewModel.getDetail(id: viewModel.movies[indexPath.item]._id)
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrolView){

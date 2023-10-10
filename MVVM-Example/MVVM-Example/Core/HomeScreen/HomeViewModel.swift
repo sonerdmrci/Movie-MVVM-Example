@@ -33,5 +33,15 @@ extension HomeViewModel: HomeViewModelProtocol {
             self.view?.reloadCollectionView() 
         }
     }
+
+    func getDetail(){
+        service.downloadDetail(id: id){ [weak self] returnedDetail in
+            guard let self = self else { return }
+
+            guard let returnedDetail = returnedDetail else { return }
+    
+
+        }
+    }
     
 }
